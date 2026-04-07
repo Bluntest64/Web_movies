@@ -115,3 +115,41 @@ CREATE INDEX IF NOT EXISTS idx_funciones_pelicula ON funciones(pelicula_id);
 CREATE INDEX IF NOT EXISTS idx_tiquetes_funcion ON tiquetes(funcion_id);
 CREATE INDEX IF NOT EXISTS idx_funcion_asientos_funcion ON funcion_asientos(funcion_id);
 CREATE INDEX IF NOT EXISTS idx_tiquetes_codigo ON tiquetes(codigo);
+
+-- =========================
+-- Películas iniciales
+-- =========================
+INSERT INTO peliculas (titulo, descripcion, duracion, genero, clasificacion, imagen_url) VALUES
+('The Matrix', 'Un hacker descubre la realidad', 136, 'Ciencia Ficcion', 'PG-13', 'https://image.tmdb.org/t/p/w500/aOIuZAjPaRIE6CMzbazvcHuHXDc.jpg'),
+('Gladiator', 'Un general romano busca venganza', 155, 'Accion', 'R', 'https://image.tmdb.org/t/p/w500/ty8TGRuvJLPUmAR1H1nRIsgwvim.jpg'),
+('Avengers: Endgame', 'Batalla final contra Thanos', 181, 'Accion', 'PG-13', 'https://image.tmdb.org/t/p/w500/or06FN3Dka5tukK1e9sl16pB3iy.jpg'),
+('Joker', 'Origen del villano de Gotham', 122, 'Drama', 'R', 'https://image.tmdb.org/t/p/w500/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg'),
+('Spider-Man: No Way Home', 'Multiverso arácnido', 148, 'Accion', 'PG-13', 'https://image.tmdb.org/t/p/w500/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg'),
+('The Lion King', 'Historia del rey leon', 88, 'Animacion', 'G', 'https://image.tmdb.org/t/p/w500/2bXbqYdUdNVa8VIWXVfclP2ICtT.jpg'),
+('Frozen', 'Reino de hielo', 102, 'Animacion', 'PG', 'https://image.tmdb.org/t/p/w500/kgwjIb2JDHRhNk13lmSxiClFjVk.jpg'),
+('Black Panther', 'Wakanda protege su legado', 134, 'Accion', 'PG-13', 'https://image.tmdb.org/t/p/w500/uxzzxijgPIY7slzFvMotPv8wjKA.jpg'),
+('Doctor Strange', 'Magia y multiverso', 115, 'Accion', 'PG-13', 'https://image.tmdb.org/t/p/w500/uGBVj3bEbCoZbDjjl9wTxcygko1.jpg'),
+('Harry Potter', 'Inicio en Hogwarts', 152, 'Fantasia', 'PG', 'https://image.tmdb.org/t/p/w500/wuMc08IPKEatf9rnMNXvIDxqP4W.jpg'),
+('Lord of the Rings', 'La comunidad del anillo', 178, 'Fantasia', 'PG-13', 'https://image.tmdb.org/t/p/w500/6oom5QYQ2yQTMJIbnvbkBL9cHo6.jpg'),
+('Star Wars', 'Una nueva esperanza', 121, 'Ciencia Ficcion', 'PG', 'https://image.tmdb.org/t/p/w500/6FfCtAuVAW8XJjZ7eWeLibRLWTw.jpg'),
+('Deadpool', 'Antihéroe irreverente', 108, 'Accion', 'R', 'https://image.tmdb.org/t/p/w500/3E53WEZJqP6aM84D8CckXx4pIHw.jpg'),
+('Venom', 'Simbionte alienigena', 112, 'Accion', 'PG-13', 'https://image.tmdb.org/t/p/w500/2uNW4WbgBXL25BAbXGLnLqX71Sw.jpg');
+
+-- =========================
+-- Funciones iniciales
+-- =========================
+INSERT INTO funciones (pelicula_id, fecha, hora, sala, precio) VALUES
+(1, CURRENT_DATE, '10:00', 'Sala 1', 12000),
+(2, CURRENT_DATE, '11:30', 'Sala 1', 12000),
+(3, CURRENT_DATE, '13:00', 'Sala 1', 12000),
+(4, CURRENT_DATE, '14:30', 'Sala 1', 12000),
+(5, CURRENT_DATE, '16:00', 'Sala 1', 12000),
+(6, CURRENT_DATE, '17:30', 'Sala 2', 12000),
+(7, CURRENT_DATE, '19:00', 'Sala 2', 12000),
+(8, CURRENT_DATE, '20:30', 'Sala 2', 12000),
+(9, CURRENT_DATE, '22:00', 'Sala 2', 12000),
+(10, CURRENT_DATE, '12:00', 'Sala 3', 12000),
+(11, CURRENT_DATE, '15:00', 'Sala 3', 12000),
+(12, CURRENT_DATE, '18:00', 'Sala 3', 12000),
+(13, CURRENT_DATE, '21:00', 'Sala 3', 12000),
+(14, CURRENT_DATE, '23:00', 'Sala 3', 12000);
