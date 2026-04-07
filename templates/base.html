@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}CineGest{% endblock %} — CineGest</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+<div class="page-wrapper">
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container">
+      <div class="navbar-inner">
+        <a class="navbar-brand" href="{{ url_for('main.index') }}">🎬 <span>Cine</span>Gest</a>
+        <div class="navbar-nav">
+          <a class="nav-link" href="{{ url_for('main.cartelera') }}">Cartelera</a>
+          <a class="nav-link" href="{{ url_for('main.validar') }}">Validar Tiquete</a>
+          {% if current_user.is_admin %}
+            <a class="nav-link" href="{{ url_for('admin.dashboard') }}">Admin</a>
+          {% endif %}
+          {% if current_user.is_authenticated %}
+            <a class="nav-link" href="{{ url_for('main.mis_tiquetes') }}">Mis Tiquetes</a>
+            <div class="nav-user">
+              <div class="nav-avatar">{{ current_user.nombre[0]|upper }}</div>
+              <span>{{ current_user.nombre.split()[0] }}</span>
+              <a href="{{ url_for('auth.logout') }}" class="btn btn-sm btn-outline">Salir</a>
+            </div>
+          {% else %}
+            <a class="nav-link" href="{{ url_for('auth.login') }}">Iniciar sesión</a>
+            <a class="btn btn-primary btn-sm" href="{{ url_for('auth.registro') }}">Registrarse</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Flash messages -->
+  <div class="flash-container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="flash flash-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endwith %}
+  </div>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>© 2025 CineGest — SENA CNCA · Nodo TIC ADSO18</p>
+    </div>
+  </footer>
+</div>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

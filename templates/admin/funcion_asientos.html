@@ -1,0 +1,50 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Sala - {{ funcion.pelicula_titulo }}{% endblock %}
+
+{% block admin_content %}
+<div class="section-header">
+  <h2 class="section-title">Vista de <span>Sala</span></h2>
+  <a href="{{ url_for('admin.funciones') }}" class="btn btn-outline">← Funciones</a>
+</div>
+
+<div class="card mb-3">
+  <div class="card-body">
+    <div class="d-flex gap-2 flex-wrap">
+      <div><span style="color:var(--text3);font-size:0.78rem;">Película</span><br><strong>{{ funcion.pelicula_titulo }}</strong></div>
+      <div style="margin-left:2rem;"><span style="color:var(--text3);font-size:0.78rem;">Fecha</span><br><strong>{{ funcion.fecha }}</strong></div>
+      <div style="margin-left:2rem;"><span style="color:var(--text3);font-size:0.78rem;">Hora</span><br><strong>{{ funcion.hora }}</strong></div>
+      <div style="margin-left:2rem;"><span style="color:var(--text3);font-size:0.78rem;">Sala</span><br><strong>{{ funcion.sala }}</strong></div>
+      <div style="margin-left:auto;text-align:right;">
+        <div style="color:var(--text3);font-size:0.78rem;">Ocupación</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--gold);">{{ ocupacion }}/150</div>
+      </div>
+    </div>
+    <!-- Barra de progreso -->
+    <div style="margin-top:1rem;height:8px;background:var(--bg3);border-radius:99px;">
+      <div style="height:100%;width:{{ (ocupacion/150*100)|int }}%;background:{% if ocupacion/150 > 0.8 %}var(--red){% else %}var(--gold){% endif %};border-radius:99px;transition:width .3s;"></div>
+    </div>
+  </div>
+</div>
+
+<div class="screen-bar" style="margin-bottom:2.5rem;max-width:640px;margin-left:auto;margin-right:auto;"></div>
+
+<div class="seat-grid" style="max-width:640px;margin:0 auto;pointer-events:none;">
+  {% for a in asientos %}
+    <div class="seat {% if a.estado_funcion=='ocupado' %}occupied{% else %}available{% endif %}"
+         title="{{ a.fila }}{{ a.columna }} - {{ a.estado_funcion }}">
+      {{ a.fila }}{{ a.columna }}
+    </div>
+  {% endfor %}
+</div>
+
+<div class="seat-legend mt-3">
+  <div class="seat-legend-item">
+    <div class="seat-legend-box" style="background:var(--bg3);border:1.5px solid rgba(255,255,255,0.12);"></div>
+    <span>Disponible ({{ 150 - ocupacion }})</span>
+  </div>
+  <div class="seat-legend-item">
+    <div class="seat-legend-box" style="background:rgba(229,57,53,.15);border:1.5px solid rgba(229,57,53,.3);"></div>
+    <span>Ocupado ({{ ocupacion }})</span>
+  </div>
+</div>
+{% endblock %}

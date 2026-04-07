@@ -1,0 +1,48 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Funciones - Admin{% endblock %}
+
+{% block admin_content %}
+<div class="section-header">
+  <h2 class="section-title">Funciones</h2>
+  <a href="{{ url_for('admin.funcion_nueva') }}" class="btn btn-primary">+ Nueva Función</a>
+</div>
+
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr><th>ID</th><th>Película</th><th>Fecha</th><th>Hora</th><th>Sala</th><th>Precio</th><th>Ocupación</th><th>Estado</th><th>Acciones</th></tr>
+    </thead>
+    <tbody>
+      {% for f in funciones %}
+      <tr>
+        <td style="color:var(--text3);">#{{ f.id }}</td>
+        <td style="color:var(--text);font-weight:500;">{{ f.pelicula_titulo }}</td>
+        <td>{{ f.fecha }}</td>
+        <td>{{ f.hora }}</td>
+        <td>{{ f.sala }}</td>
+        <td style="color:var(--gold);">{{ f.precio|currency }}</td>
+        <td>
+          <span style="font-size:0.85rem;">{{ f.asientos_ocupados or 0 }}/150</span>
+          {% if (f.asientos_ocupados or 0) >= 150 %}
+            <span class="badge badge-red" style="margin-left:4px;">Llena</span>
+          {% endif %}
+        </td>
+        <td><span class="badge {% if f.estado=='disponible' %}badge-green{% else %}badge-red{% endif %}">{{ f.estado }}</span></td>
+        <td>
+          <div class="d-flex gap-1">
+            <a href="{{ url_for('admin.funcion_asientos', fid=f.id) }}" class="btn btn-outline btn-sm">Sala</a>
+            <a href="{{ url_for('admin.funcion_editar', fid=f.id) }}" class="btn btn-outline btn-sm">Editar</a>
+            <form method="POST" action="{{ url_for('admin.funcion_eliminar', fid=f.id) }}" style="display:inline;">
+              <button type="submit" class="btn btn-danger btn-sm"
+                      data-confirm="¿Eliminar esta función?">Eliminar</button>
+            </form>
+          </div>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="9" style="text-align:center;color:var(--text3);padding:2rem;">No hay funciones creadas.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

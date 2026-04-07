@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="admin-layout">
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div style="padding:0 1.25rem 1rem;font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--gold);letter-spacing:0.06em;">
+      ⚙ Panel Admin
+    </div>
+    <div class="admin-sidebar-title">Principal</div>
+    <a href="{{ url_for('admin.dashboard') }}" class="admin-nav-link">📊 Dashboard</a>
+    <a href="{{ url_for('main.index') }}" class="admin-nav-link">🏠 Ir al Sitio</a>
+
+    <div class="admin-sidebar-title">Contenido</div>
+    <a href="{{ url_for('admin.peliculas') }}" class="admin-nav-link">🎬 Películas</a>
+    <a href="{{ url_for('admin.funciones') }}" class="admin-nav-link">📅 Funciones</a>
+
+    <div class="admin-sidebar-title">Ventas</div>
+    <a href="{{ url_for('admin.tiquetes') }}" class="admin-nav-link">🎟 Tiquetes</a>
+    <a href="{{ url_for('main.validar') }}" class="admin-nav-link">✅ Validar</a>
+
+    <div class="admin-sidebar-title">Usuarios</div>
+    <a href="{{ url_for('admin.usuarios') }}" class="admin-nav-link">👥 Usuarios</a>
+  </aside>
+
+  <!-- Content -->
+  <div class="admin-content">
+    {% block admin_content %}{% endblock %}
+  </div>
+</div>
+{% endblock %}

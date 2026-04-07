@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Validar Tiquete{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:520px;">
+  <div class="section-header">
+    <h2 class="section-title">Validar <span>Tiquete</span></h2>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <form method="POST">
+        <div class="form-group">
+          <label class="form-label">Código del Tiquete</label>
+          <input type="text" name="codigo" class="form-control"
+                 placeholder="Ej: A1B2C3D4E5F6"
+                 value="{{ request.form.get('codigo','') }}"
+                 style="text-transform:uppercase;letter-spacing:0.1em;font-size:1.1rem;"
+                 required autofocus>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block btn-lg">🔍 Verificar</button>
+      </form>
+    </div>
+  </div>
+
+  {% if resultado %}
+  <div class="validation-result validation-{{ resultado }}">
+    <div class="validation-icon">
+      {% if resultado == 'valido' %}✅
+      {% elif resultado == 'usado' %}⛔
+      {% else %}❌
+      {% endif %}
+    </div>
+    <div class="validation-text">
+      {% if resultado == 'valido' %}TIQUETE VÁLIDO
+      {% elif resultado == 'usado' %}YA FUE USADO
+      {% elif resultado == 'cancelado' %}CANCELADO
+      {% else %}INVÁLIDO
+      {% endif %}
+    </div>
+  </div>
+
+  {% if tiquete %}
+  <div class="card mt-2">
+    <div class="card-body">
+      <h3 style="margin-bottom:0.75rem;">{{ tiquete.pelicula_titulo }}</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;font-size:0.85rem;">
+        <div><div style="color:var(--text3);font-size:0.72rem;text-transform:uppercase;">Fecha</div><div>{{ tiquete.fecha }}</div></div>
+        <div><div style="color:var(--text3);font-size:0.72rem;text-transform:uppercase;">Hora</div><div>{{ tiquete.hora }}</div></div>
+        <div><div style="color:var(--text3);font-size:0.72rem;text-transform:uppercase;">Sala</div><div>{{ tiquete.sala }}</div></div>
+        <div><div style="color:var(--text3);font-size:0.72rem;text-transform:uppercase;">Total</div><div style="color:var(--gold);">{{ tiquete.total|currency }}</div></div>
+      </div>
+      {% if asientos %}
+      <div class="mt-2">
+        <div style="color:var(--text3);font-size:0.72rem;text-transform:uppercase;margin-bottom:0.25rem;">Asientos</div>
+        <div>{% for a in asientos %}
+          <span class="badge badge-blue" style="margin:2px;">{{ a.fila }}{{ a.columna }}</span>
+        {% endfor %}</div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+  {% endif %}
+</div>
+{% endblock %}

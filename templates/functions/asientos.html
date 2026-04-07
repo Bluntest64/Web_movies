@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% block title %}Seleccionar Asientos{% endblock %}
+
+{% block content %}
+<div class="container">
+  <!-- Info función -->
+  <div class="card mb-3" style="max-width:700px;margin-left:auto;margin-right:auto;">
+    <div class="card-body">
+      <div class="d-flex gap-2 align-center flex-wrap">
+        {% if funcion.imagen_url %}
+          <img src="{{ funcion.imagen_url }}" style="width:56px;height:72px;object-fit:cover;border-radius:8px;">
+        {% endif %}
+        <div style="flex:1;">
+          <h2 style="margin-bottom:0.25rem;">{{ funcion.pelicula_titulo }}</h2>
+          <div class="d-flex gap-2 flex-wrap" style="font-size:0.85rem;color:var(--text2);">
+            <span>📅 {{ funcion.fecha.strftime('%d/%m/%Y') if funcion.fecha else funcion.fecha }}</span>
+            <span>🕐 {{ funcion.hora.strftime('%H:%M') if funcion.hora else funcion.hora }}</span>
+            <span>🎭 {{ funcion.sala }}</span>
+            <span>📽 {{ funcion.clasificacion }}</span>
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:0.75rem;color:var(--text3);">Precio por asiento</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--gold);">${{ "%.0f"|format(funcion.precio) }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grid de asientos -->
+  <div style="max-width:700px;margin:0 auto;">
+    <div class="screen-bar" style="margin-bottom:2.5rem;"></div>
+
+    <!-- Etiquetas de filas -->
+    <div class="seat-grid-wrapper">
+      <div style="display:flex;gap:6px;max-width:640px;margin:0 auto 0.5rem;">
+        <div style="width:18px;"></div>
+        {% for c in range(1,16) %}
+          <div style="flex:1;text-align:center;font-size:0.6rem;color:var(--text3);">{{ c }}</div>
+        {% endfor %}
+      </div>
+      <div style="display:flex;gap:6px;max-width:640px;margin:0 auto;">
+        <!-- Columna de filas -->
+        <div style="display:flex;flex-direction:column;gap:5px;padding-top:0;">
+          {% set filas = [] %}
+          {% for a in asientos %}
+            {% if a.fila not in filas %}
+              {% set _ = filas.append(a.fila) %}
+            {% endif %}
+          {% endfor %}
+          {% for fila in filas %}
+            <div style="height:32px;display:flex;align-items:center;font-size:0.65rem;color:var(--text3);font-weight:600;">{{ fila }}</div>
+          {% endfor %}
+        </div>
+        <!-- Asientos -->
+        <div class="seat-grid" style="flex:1;">
+          {% for a in asientos %}
+            {% if a.estado_funcion == 'ocupado' %}
+              <button class="seat occupied" disabled title="Asiento {{ a.fila }}{{ a.columna }} - Ocupado">
+                {{ a.fila }}{{ a.columna }}
+              </button>
+            {% else %}
+              <button class="seat available" data-id="{{ a.id }}" title="Asiento {{ a.fila }}{{ a.columna }}">
+                {{ a.fila }}{{ a.columna }}
+              </button>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Leyenda -->
+    <div class="seat-legend">
+      <div class="seat-legend-item">
+        <div class="seat-legend-box" style="background:var(--bg3);border:1.5px solid rgba(255,255,255,0.12);"></div>
+        <span>Disponible</span>
+      </div>
+      <div class="seat-legend-item">
+        <div class="seat-legend-box" style="background:var(--gold);"></div>
+        <span>Seleccionado</span>
+      </div>
+      <div class="seat-legend-item">
+        <div class="seat-legend-box" style="background:rgba(229,57,53,.15);border:1.5px solid rgba(229,57,53,.3);"></div>
+        <span>Ocupado</span>
+      </div>
+    </div>
+
+    <!-- Resumen de compra -->
+    <div class="card mt-3">
+      <div class="card-body">
+        <div class="d-flex align-center justify-between flex-wrap gap-2">
+          <div>
+            <div style="font-size:0.82rem;color:var(--text2);">Asientos seleccionados: <strong id="count-display" style="color:var(--text);">0</strong></div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--gold);">Total: <span id="total-display">$0</span></div>
+          </div>
+          {% if current_user.is_authenticated %}
+            <form action="{{ url_for('main.comprar') }}" method="POST">
+              <input type="hidden" name="funcion_id" value="{{ funcion.id }}">
+              <input type="hidden" name="precio_unitario" id="precio-unitario" value="{{ funcion.precio }}">
+              <input type="hidden" name="asiento_ids" id="selected-seats-input" value="">
+              <!-- Convertir IDs seleccionados a múltiples campos -->
+              <button type="submit" id="buy-btn" class="btn btn-primary btn-lg" disabled
+                      onclick="return splitSeats(this)">
+                🎟 Confirmar Compra
+              </button>
+            </form>
+          {% else %}
+            <div style="text-align:center;">
+              <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg">Inicia sesión para comprar</a>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function splitSeats(btn) {
+  const form = btn.closest('form');
+  const idsVal = document.getElementById('selected-seats-input').value;
+  if (!idsVal) { alert('Selecciona al menos un asiento.'); return false; }
+  // Remove old hidden fields
+  form.querySelectorAll('input[name="asiento_ids"]').forEach(e => e.remove());
+  // Add one field per seat
+  idsVal.split(',').forEach(id => {
+    const inp = document.createElement('input');
+    inp.type = 'hidden'; inp.name = 'asiento_ids'; inp.value = id.trim();
+    form.appendChild(inp);
+  });
+  return true;
+}
+</script>
+{% endblock %}

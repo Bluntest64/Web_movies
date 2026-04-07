@@ -1,0 +1,50 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Películas - Admin{% endblock %}
+
+{% block admin_content %}
+<div class="section-header">
+  <h2 class="section-title">Películas</h2>
+  <a href="{{ url_for('admin.pelicula_nueva') }}" class="btn btn-primary">+ Nueva Película</a>
+</div>
+
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr><th>ID</th><th>Imagen</th><th>Título</th><th>Género</th><th>Duración</th><th>Clasificación</th><th>Estado</th><th>Acciones</th></tr>
+    </thead>
+    <tbody>
+      {% for p in peliculas %}
+      <tr>
+        <td style="color:var(--text3);">#{{ p.id }}</td>
+        <td>
+          {% if p.imagen_url %}
+            <img src="{{ p.imagen_url }}" style="width:36px;height:48px;object-fit:cover;border-radius:4px;">
+          {% else %}
+            <div style="width:36px;height:48px;background:var(--bg3);border-radius:4px;display:flex;align-items:center;justify-content:center;">🎬</div>
+          {% endif %}
+        </td>
+        <td style="color:var(--text);font-weight:500;">{{ p.titulo }}</td>
+        <td>{{ p.genero }}</td>
+        <td>{{ p.duracion|duracion }}</td>
+        <td><span class="badge badge-gold">{{ p.clasificacion }}</span></td>
+        <td><span class="badge {% if p.estado=='activa' %}badge-green{% else %}badge-red{% endif %}">{{ p.estado }}</span></td>
+        <td>
+          <div class="d-flex gap-1">
+            <a href="{{ url_for('main.pelicula_detalle', pid=p.id) }}" class="btn btn-outline btn-sm">Ver</a>
+            <a href="{{ url_for('admin.pelicula_editar', pid=p.id) }}" class="btn btn-outline btn-sm">Editar</a>
+            <form method="POST" action="{{ url_for('admin.pelicula_eliminar', pid=p.id) }}" style="display:inline;">
+              <button type="submit" class="btn btn-danger btn-sm"
+                      data-confirm="¿Eliminar '{{ p.titulo }}'? Esta acción no se puede deshacer.">
+                Eliminar
+              </button>
+            </form>
+          </div>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="8" style="text-align:center;color:var(--text3);padding:2rem;">No hay películas registradas.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

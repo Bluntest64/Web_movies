@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Cartelera{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="section-header">
+    <h2 class="section-title">Cartelera <span>Activa</span></h2>
+  </div>
+
+  {% if peliculas %}
+  <div class="movie-grid">
+    {% for p in peliculas %}
+    <a href="{{ url_for('main.pelicula_detalle', pid=p.id) }}" class="card movie-card" style="text-decoration:none;color:inherit;">
+      {% if p.imagen_url %}
+        <img class="movie-card-img" src="{{ p.imagen_url }}" alt="{{ p.titulo }}" loading="lazy">
+      {% else %}
+        <div class="movie-card-img-placeholder">🎬</div>
+      {% endif %}
+      <div class="movie-card-body">
+        <div class="movie-card-title">{{ p.titulo }}</div>
+        <div class="movie-card-meta">
+          <span class="badge badge-gold">{{ p.clasificacion }}</span>
+          <span>{{ p.genero }}</span>
+          <span>{{ p.duracion|duracion }}</span>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div style="text-align:center;padding:5rem;color:var(--text3);">
+    <div style="font-size:4rem;margin-bottom:1rem;">🎭</div>
+    <h3>Sin películas disponibles</h3>
+    <p class="mt-1">Vuelve pronto para ver las novedades.</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Tiquetes - Admin{% endblock %}
+
+{% block admin_content %}
+<div class="section-header">
+  <h2 class="section-title">Tiquetes</h2>
+</div>
+
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr><th>Código</th><th>Película</th><th>Función</th><th>Usuario</th><th>Total</th><th>Comprado</th><th>Estado</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for t in tiquetes %}
+      <tr>
+        <td><code style="color:var(--gold);font-size:0.82rem;">{{ t.codigo }}</code></td>
+        <td style="color:var(--text);">{{ t.pelicula_titulo }}</td>
+        <td style="font-size:0.82rem;color:var(--text2);">{{ t.fecha }} {{ t.hora }}</td>
+        <td>{{ t.usuario_nombre or '—' }}</td>
+        <td style="color:var(--gold);">{{ t.total|currency }}</td>
+        <td style="font-size:0.8rem;color:var(--text3);">{{ t.fecha_compra.strftime('%d/%m %H:%M') if t.fecha_compra else '' }}</td>
+        <td><span class="badge {% if t.estado=='activo' %}badge-green{% elif t.estado=='usado' %}badge-blue{% else %}badge-red{% endif %}">{{ t.estado|upper }}</span></td>
+        <td><a href="{{ url_for('admin.tiquete_detalle', tid=t.id) }}" class="btn btn-outline btn-sm">Ver</a></td>
+      </tr>
+      {% else %}
+      <tr><td colspan="8" style="text-align:center;color:var(--text3);padding:2rem;">Sin tiquetes vendidos.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Iniciar Sesión{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:420px;padding-top:3rem;">
+  <div style="text-align:center;margin-bottom:2rem;">
+    <div style="font-size:3rem;margin-bottom:0.5rem;">🎬</div>
+    <h2>Iniciar <span style="color:var(--gold)">Sesión</span></h2>
+    <p style="color:var(--text2);margin-top:0.5rem;">Accede a tu cuenta CineGest</p>
+  </div>
+  <div class="card">
+    <div class="card-body">
+      <form method="POST">
+        <div class="form-group">
+          <label class="form-label">Correo electrónico</label>
+          <input type="email" name="email" class="form-control" placeholder="tu@email.com"
+                 value="{{ request.form.get('email','') }}" required autofocus>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Contraseña</label>
+          <input type="password" name="contrasena" class="form-control" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block btn-lg">Entrar</button>
+      </form>
+    </div>
+    <div class="card-footer text-center">
+      <span style="color:var(--text2);font-size:0.88rem;">¿Sin cuenta?</span>
+      <a href="{{ url_for('auth.registro') }}" style="margin-left:0.5rem;">Regístrate gratis</a>
+    </div>
+  </div>
+  <div class="mt-2 text-center" style="font-size:0.8rem;color:var(--text3);">
+    Admin por defecto: <code>admin@cinegest.com</code> / <code>admin123</code>
+  </div>
+</div>
+{% endblock %}

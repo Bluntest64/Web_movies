@@ -1,0 +1,72 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}{{ accion }} Película{% endblock %}
+
+{% block admin_content %}
+<div class="section-header">
+  <h2 class="section-title">{{ accion }} <span>Película</span></h2>
+  <a href="{{ url_for('admin.peliculas') }}" class="btn btn-outline">← Volver</a>
+</div>
+
+<div class="card" style="max-width:700px;">
+  <div class="card-body">
+    <form method="POST">
+      <div class="grid-2">
+        <div class="form-group" style="grid-column:1/-1;">
+          <label class="form-label">Título *</label>
+          <input type="text" name="titulo" class="form-control" required
+                 value="{{ pelicula.titulo if pelicula else '' }}" placeholder="Nombre de la película">
+        </div>
+        <div class="form-group" style="grid-column:1/-1;">
+          <label class="form-label">Descripción</label>
+          <textarea name="descripcion" class="form-control" placeholder="Sinopsis...">{{ pelicula.descripcion if pelicula else '' }}</textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Duración (minutos) *</label>
+          <input type="number" name="duracion" class="form-control" required min="1"
+                 value="{{ pelicula.duracion if pelicula else '' }}" placeholder="120">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Género</label>
+          <select name="genero" class="form-control">
+            {% set generos = ['Acción','Aventura','Animación','Comedia','Drama','Terror','Ciencia ficción','Romance','Suspenso','Documental'] %}
+            {% for g in generos %}
+              <option value="{{ g }}" {% if pelicula and pelicula.genero == g %}selected{% endif %}>{{ g }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Clasificación</label>
+          <select name="clasificacion" class="form-control">
+            {% for c in ['G','PG','PG-13','+13','+16','+18','R'] %}
+              <option value="{{ c }}" {% if pelicula and pelicula.clasificacion == c %}selected{% endif %}>{{ c }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Estado</label>
+          <select name="estado" class="form-control">
+            <option value="activa" {% if not pelicula or pelicula.estado=='activa' %}selected{% endif %}>Activa</option>
+            <option value="inactiva" {% if pelicula and pelicula.estado=='inactiva' %}selected{% endif %}>Inactiva</option>
+          </select>
+        </div>
+        <div class="form-group" style="grid-column:1/-1;">
+          <label class="form-label">URL de imagen (póster)</label>
+          <input type="url" name="imagen_url" class="form-control"
+                 value="{{ pelicula.imagen_url if pelicula else '' }}"
+                 placeholder="https://imagen.ejemplo.com/poster.jpg">
+        </div>
+        <div class="form-group" style="grid-column:1/-1;">
+          <label class="form-label">URL del tráiler (YouTube)</label>
+          <input type="url" name="trailer_url" class="form-control"
+                 value="{{ pelicula.trailer_url if pelicula else '' }}"
+                 placeholder="https://youtube.com/watch?v=...">
+        </div>
+      </div>
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary">💾 {{ accion }} Película</button>
+        <a href="{{ url_for('admin.peliculas') }}" class="btn btn-outline">Cancelar</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

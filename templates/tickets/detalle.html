@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Tiquete {{ tiquete.codigo }}{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:520px;">
+  <h2 class="section-title text-center mb-3">Tu <span>Tiquete</span></h2>
+
+  <div class="ticket-card">
+    <div class="ticket-header">
+      <div style="font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text3);margin-bottom:0.25rem;">CineGest · Entrada</div>
+      <h3 style="font-size:1.6rem;margin-bottom:0.5rem;">{{ tiquete.pelicula_titulo }}</h3>
+      <div class="d-flex gap-2 flex-wrap" style="font-size:0.85rem;color:var(--text2);">
+        <span>📅 {{ tiquete.fecha.strftime('%d/%m/%Y') if tiquete.fecha else tiquete.fecha }}</span>
+        <span>🕐 {{ tiquete.hora.strftime('%H:%M') if tiquete.hora else tiquete.hora }}</span>
+        <span>🎭 {{ tiquete.sala }}</span>
+      </div>
+    </div>
+
+    <!-- QR -->
+    <div class="ticket-qr">
+      <canvas id="qr-canvas"></canvas>
+      <div class="ticket-code mt-1">{{ tiquete.codigo }}</div>
+      <div style="font-size:0.75rem;color:var(--text3);">Presenta este código al ingresar</div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="ticket-details">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;font-size:0.85rem;">
+        <div>
+          <div style="color:var(--text3);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;">Asientos</div>
+          <div style="color:var(--text);font-weight:600;">
+            {% for a in asientos %}{{ a.fila }}{{ a.columna }}{% if not loop.last %}, {% endif %}{% endfor %}
+          </div>
+        </div>
+        <div>
+          <div style="color:var(--text3);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;">Total pagado</div>
+          <div style="color:var(--gold);font-family:'Bebas Neue',sans-serif;font-size:1.5rem;">{{ tiquete.total|currency }}</div>
+        </div>
+        <div>
+          <div style="color:var(--text3);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;">Estado</div>
+          <span class="badge {% if tiquete.estado=='activo' %}badge-green{% elif tiquete.estado=='usado' %}badge-red{% else %}badge-red{% endif %}">
+            {{ tiquete.estado|upper }}
+          </span>
+        </div>
+        <div>
+          <div style="color:var(--text3);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;">Comprado</div>
+          <div style="color:var(--text2);">{{ tiquete.fecha_compra.strftime('%d/%m/%Y %H:%M') if tiquete.fecha_compra else '' }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-footer text-center">
+      <a href="{{ url_for('main.mis_tiquetes') }}" class="btn btn-outline btn-sm">← Mis Tiquetes</a>
+      <button onclick="window.print()" class="btn btn-primary btn-sm">🖨 Imprimir</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+  new QRCode(document.getElementById("qr-canvas"), {
+    text: "{{ tiquete.codigo }}",
+    width: 180, height: 180,
+    colorDark: "#000000", colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.H
+  });
+</script>
+{% endblock %}

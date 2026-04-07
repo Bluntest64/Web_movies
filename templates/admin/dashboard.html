@@ -1,0 +1,114 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block admin_content %}
+<div class="section-header">
+  <h2 class="section-title">Dashboard</h2>
+</div>
+
+<!-- Stats -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-label">💰 Total Ingresos</div>
+    <div class="stat-value">{{ total_ventas|currency }}</div>
+    <div class="stat-sub">Tiquetes vendidos</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">📅 Funciones Activas</div>
+    <div class="stat-value">{{ funciones|selectattr('estado','eq','disponible')|list|length }}</div>
+    <div class="stat-sub">Disponibles hoy y futuras</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">🎬 Películas en Cartelera</div>
+    <div class="stat-value">{{ funciones|map(attribute='pelicula_titulo')|list|unique|list|length }}</div>
+    <div class="stat-sub">Títulos activos</div>
+  </div>
+</div>
+
+<div class="grid-2">
+  <!-- Ventas por día -->
+  <div class="card">
+    <div class="card-body">
+      <h3 class="mb-2">Ventas últimos 7 días</h3>
+      {% if ventas_dia %}
+      <div class="table-wrap" style="border:none;">
+        <table>
+          <thead>
+            <tr><th>Día</th><th>Tiquetes</th><th>Ingresos</th></tr>
+          </thead>
+          <tbody>
+            {% for v in ventas_dia %}
+            <tr>
+              <td>{{ v.dia }}</td>
+              <td>{{ v.cantidad }}</td>
+              <td style="color:var(--gold);">{{ v.ingresos|currency }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+        <p style="color:var(--text3);text-align:center;padding:1rem;">Sin ventas aún.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Películas más vistas -->
+  <div class="card">
+    <div class="card-body">
+      <h3 class="mb-2">Top Películas</h3>
+      {% if peliculas_top %}
+        {% for p in peliculas_top %}
+        <div class="d-flex align-center justify-between" style="padding:0.6rem 0;border-bottom:1px solid var(--border);">
+          <span style="font-size:0.9rem;">{{ p.titulo }}</span>
+          <span class="badge badge-gold">{{ p.total_ventas }} tiquetes</span>
+        </div>
+        {% endfor %}
+      {% else %}
+        <p style="color:var(--text3);text-align:center;padding:1rem;">Sin datos aún.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- Ocupación por función -->
+<div class="card mt-3">
+  <div class="card-body">
+    <div class="d-flex align-center justify-between mb-2">
+      <h3>Ocupación por Función</h3>
+      <a href="{{ url_for('admin.funciones') }}" class="btn btn-outline btn-sm">Ver todas</a>
+    </div>
+    {% if funciones %}
+    <div class="table-wrap" style="border:none;">
+      <table>
+        <thead>
+          <tr><th>Película</th><th>Fecha</th><th>Hora</th><th>Sala</th><th>Ocupación</th><th>Estado</th><th></th></tr>
+        </thead>
+        <tbody>
+          {% for f in funciones[:8] %}
+          <tr>
+            <td>{{ f.pelicula_titulo }}</td>
+            <td>{{ f.fecha }}</td>
+            <td>{{ f.hora }}</td>
+            <td>{{ f.sala }}</td>
+            <td>
+              <div style="display:flex;align-items:center;gap:0.5rem;">
+                <div style="flex:1;height:6px;background:var(--bg3);border-radius:99px;min-width:80px;">
+                  <div style="height:100%;width:{{ ((f.asientos_ocupados or 0)/150*100)|int }}%;background:var(--gold);border-radius:99px;"></div>
+                </div>
+                <span style="font-size:0.78rem;color:var(--text2);">{{ f.asientos_ocupados or 0 }}/150</span>
+              </div>
+            </td>
+            <td><span class="badge {% if f.estado=='disponible' %}badge-green{% else %}badge-red{% endif %}">{{ f.estado }}</span></td>
+            <td><a href="{{ url_for('admin.funcion_asientos', fid=f.id) }}" class="btn btn-outline btn-sm">Ver sala</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+      <p style="color:var(--text3);text-align:center;padding:1rem;">Sin funciones creadas.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

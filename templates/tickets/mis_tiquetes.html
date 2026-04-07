@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Mis Tiquetes{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="section-header">
+    <h2 class="section-title">Mis <span>Tiquetes</span></h2>
+  </div>
+
+  {% if tiquetes %}
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Película</th>
+          <th>Fecha</th>
+          <th>Hora</th>
+          <th>Sala</th>
+          <th>Total</th>
+          <th>Estado</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for t in tiquetes %}
+        <tr>
+          <td><code style="font-family:monospace;color:var(--gold);font-size:0.85rem;">{{ t.codigo }}</code></td>
+          <td>{{ t.pelicula_titulo }}</td>
+          <td>{{ t.fecha.strftime('%d/%m/%Y') if t.fecha else t.fecha }}</td>
+          <td>{{ t.hora.strftime('%H:%M') if t.hora else t.hora }}</td>
+          <td>{{ t.sala }}</td>
+          <td style="color:var(--gold);">{{ t.total|currency }}</td>
+          <td>
+            <span class="badge {% if t.estado=='activo' %}badge-green{% elif t.estado=='usado' %}badge-red{% else %}badge-red{% endif %}">
+              {{ t.estado|upper }}
+            </span>
+          </td>
+          <td>
+            <a href="{{ url_for('main.tiquete_detalle', tid=t.id) }}" class="btn btn-outline btn-sm">Ver</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div style="text-align:center;padding:5rem;color:var(--text3);">
+    <div style="font-size:4rem;margin-bottom:1rem;">🎟</div>
+    <h3>No tienes tiquetes aún</h3>
+    <p class="mt-1 mb-3">Explora la cartelera y compra tu primera entrada.</p>
+    <a href="{{ url_for('main.cartelera') }}" class="btn btn-primary">Ver Cartelera</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

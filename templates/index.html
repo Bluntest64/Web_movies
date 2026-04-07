@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Inicio{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <p class="hero-eyebrow">🎬 Sistema de Gestión de Cine</p>
+      <h1 class="hero-title">Tu cine,<br><span style="color:var(--gold)">digitalizado.</span></h1>
+      <p class="hero-sub">Compra tus tiquetes, selecciona tu asiento y disfruta la experiencia en línea.</p>
+      <div class="d-flex gap-2 flex-wrap">
+        <a href="{{ url_for('main.cartelera') }}" class="btn btn-primary btn-lg">Ver Cartelera</a>
+        <a href="{{ url_for('main.validar') }}" class="btn btn-outline btn-lg">Validar Tiquete</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Funciones próximas -->
+<div class="container">
+  <div class="section-header">
+    <h2 class="section-title">Funciones <span>Disponibles</span></h2>
+    <a href="{{ url_for('main.cartelera') }}" class="btn btn-outline btn-sm">Ver todas</a>
+  </div>
+
+  {% if funciones %}
+  <div class="grid-3">
+    {% for f in funciones[:6] %}
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex align-center gap-2 mb-2">
+          {% if f.imagen_url %}
+            <img src="{{ f.imagen_url }}" style="width:48px;height:64px;object-fit:cover;border-radius:6px;">
+          {% else %}
+            <div style="width:48px;height:64px;background:var(--bg3);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;">🎬</div>
+          {% endif %}
+          <div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;">{{ f.pelicula_titulo }}</div>
+            <div style="font-size:0.78rem;color:var(--text2);">{{ f.clasificacion }} · {{ f.pelicula_duracion }} min</div>
+          </div>
+        </div>
+        <div class="d-flex gap-1 flex-wrap mb-2">
+          <span class="badge badge-blue">📅 {{ f.fecha.strftime('%d/%m/%Y') if f.fecha else f.fecha }}</span>
+          <span class="badge badge-gold">🕐 {{ f.hora.strftime('%H:%M') if f.hora else f.hora }}</span>
+        </div>
+        <div class="d-flex align-center justify-between">
+          <strong style="color:var(--gold);font-size:1.1rem;">${{ "%.0f"|format(f.precio) }}</strong>
+          <a href="{{ url_for('main.asientos', fid=f.id) }}" class="btn btn-primary btn-sm">Comprar</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div style="text-align:center;padding:4rem;color:var(--text3);">
+    <div style="font-size:3rem;margin-bottom:1rem;">🎭</div>
+    <p>No hay funciones disponibles por el momento.</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

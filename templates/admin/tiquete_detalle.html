@@ -1,0 +1,52 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Tiquete {{ tiquete.codigo }}{% endblock %}
+
+{% block admin_content %}
+<div class="section-header">
+  <h2 class="section-title">Detalle <span>Tiquete</span></h2>
+  <a href="{{ url_for('admin.tiquetes') }}" class="btn btn-outline">← Volver</a>
+</div>
+
+{% if tiquete %}
+<div class="grid-2">
+  <div class="card">
+    <div class="card-body">
+      <h3 class="mb-2">Información del Tiquete</h3>
+      <div style="display:grid;gap:0.75rem;font-size:0.88rem;">
+        <div><span style="color:var(--text3);">Código:</span> <code style="color:var(--gold);font-size:1rem;">{{ tiquete.codigo }}</code></div>
+        <div><span style="color:var(--text3);">Película:</span> <strong>{{ tiquete.pelicula_titulo }}</strong></div>
+        <div><span style="color:var(--text3);">Función:</span> {{ tiquete.fecha }} a las {{ tiquete.hora }}</div>
+        <div><span style="color:var(--text3);">Sala:</span> {{ tiquete.sala }}</div>
+        <div><span style="color:var(--text3);">Usuario:</span> {{ tiquete.usuario_nombre or 'Sin usuario' }}</div>
+        <div><span style="color:var(--text3);">Total:</span> <span style="color:var(--gold);font-family:'Bebas Neue',sans-serif;font-size:1.5rem;">{{ tiquete.total|currency }}</span></div>
+        <div><span style="color:var(--text3);">Comprado:</span> {{ tiquete.fecha_compra }}</div>
+        <div><span style="color:var(--text3);">Estado:</span>
+          <span class="badge {% if tiquete.estado=='activo' %}badge-green{% elif tiquete.estado=='usado' %}badge-blue{% else %}badge-red{% endif %}">
+            {{ tiquete.estado|upper }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-body">
+      <h3 class="mb-2">Asientos</h3>
+      {% if asientos %}
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          {% for a in asientos %}
+            <div style="background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;padding:0.5rem 0.75rem;text-align:center;">
+              <div style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--gold);">{{ a.fila }}{{ a.columna }}</div>
+              <div style="font-size:0.72rem;color:var(--text3);">{{ a.precio_unitario|currency }}</div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p style="color:var(--text3);">Sin asientos registrados.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% else %}
+  <p style="color:var(--text3);">Tiquete no encontrado.</p>
+{% endif %}
+{% endblock %}

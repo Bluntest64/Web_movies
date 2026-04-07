@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}{{ pelicula.titulo }}{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div style="display:grid;grid-template-columns:240px 1fr;gap:2.5rem;align-items:start;margin-bottom:3rem;">
+    <div>
+      {% if pelicula.imagen_url %}
+        <img src="{{ pelicula.imagen_url }}" alt="{{ pelicula.titulo }}"
+             style="width:100%;border-radius:var(--radius-lg);box-shadow:var(--shadow);">
+      {% else %}
+        <div style="aspect-ratio:2/3;background:var(--bg3);border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;font-size:4rem;">🎬</div>
+      {% endif %}
+    </div>
+    <div>
+      <div class="d-flex gap-1 flex-wrap mb-2">
+        <span class="badge badge-gold">{{ pelicula.clasificacion }}</span>
+        <span class="badge badge-blue">{{ pelicula.genero }}</span>
+        <span class="badge {% if pelicula.estado=='activa' %}badge-green{% else %}badge-red{% endif %}">{{ pelicula.estado|upper }}</span>
+      </div>
+      <h1 style="margin-bottom:0.75rem;">{{ pelicula.titulo }}</h1>
+      <div class="d-flex gap-2 flex-wrap mb-2" style="color:var(--text2);font-size:0.9rem;">
+        <span>⏱ {{ pelicula.duracion|duracion }}</span>
+      </div>
+      <p style="color:var(--text2);line-height:1.7;margin-bottom:1.5rem;">{{ pelicula.descripcion or 'Sin descripción disponible.' }}</p>
+      {% if pelicula.trailer_url %}
+        <a href="{{ pelicula.trailer_url }}" target="_blank" class="btn btn-outline mb-3">▶ Ver Tráiler</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <h2 class="section-title mb-2">Funciones <span>Disponibles</span></h2>
+  {% if funciones %}
+  <div class="grid-3">
+    {% for f in funciones %}
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex gap-1 flex-wrap mb-2">
+          <span class="badge badge-blue">📅 {{ f.fecha.strftime('%d/%m/%Y') if f.fecha else f.fecha }}</span>
+          <span class="badge badge-gold">🕐 {{ f.hora.strftime('%H:%M') if f.hora else f.hora }}</span>
+        </div>
+        <div style="font-size:0.85rem;color:var(--text2);margin-bottom:0.75rem;">🎭 {{ f.sala }} · {{ 150 - (f.asientos_ocupados or 0) }} asientos libres</div>
+        <div class="d-flex align-center justify-between">
+          <strong style="color:var(--gold);font-size:1.2rem;">${{ "%.0f"|format(f.precio) }}</strong>
+          {% if (f.asientos_ocupados or 0) >= 150 %}
+            <span class="badge badge-red">Agotado</span>
+          {% else %}
+            <a href="{{ url_for('main.asientos', fid=f.id) }}" class="btn btn-primary btn-sm">Seleccionar</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+    <div style="text-align:center;padding:3rem;color:var(--text3);">
+      <p>No hay funciones disponibles para esta película.</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
